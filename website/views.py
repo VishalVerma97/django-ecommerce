@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from .models import Item
+from django.shortcuts import render, get_object_or_404
+from .models import Item, OrderItem, Order
 from django.views.generic import ListView, DetailView
 
 
@@ -10,18 +10,18 @@ from django.views.generic import ListView, DetailView
 #     context = {
 #         'items': Item.objects.all()
 #     }
-#     return render(request, 'home-page.html', context)
+#     return render(request, 'home.html', context)
 #
 #
-# def check_out(request):
-#     return render(request, 'checkout-page.html')
-#
+def check_out(request):
+    return render(request, 'checkout-page.html')
+
 #
 # def product(request):
 #     context = {
 #         'items': Item
 #     }
-#     return render(request, 'product-page.html', context)
+#     return render(request, 'product.html', context)
 
 # we can try to use it like view as
 # class HomeView(ListView):
@@ -30,11 +30,17 @@ from django.views.generic import ListView, DetailView
 #     with method inside that class
 #     then in path use Home.asView(), in html for loop we use object_list
 
+
 class HomeView(ListView):
     model = Item
-    template_name = 'home-page.html'
+    template_name = "home.html"
 
 
 class ItemDetailView(DetailView):
     model = Item
-    template_name = 'product-page.html'
+    template_name = "product.html"
+
+
+def add_to_cart(request, slug):
+    item = get_object_or_404(Item, slug=slug)
+    order_item = OrderItem.objects.create(item= item)
